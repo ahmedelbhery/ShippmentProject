@@ -1,0 +1,17 @@
+D:\netCore_demo\shippingPro\DAL\bin\Debug\net8.0\DAL.deps.json
+D:\netCore_demo\shippingPro\DAL\bin\Debug\net8.0\DAL.runtimeconfig.json
+D:\netCore_demo\shippingPro\DAL\bin\Debug\net8.0\DAL.dll
+D:\netCore_demo\shippingPro\DAL\bin\Debug\net8.0\DAL.pdb
+D:\netCore_demo\shippingPro\DAL\bin\Debug\net8.0\Domain.dll
+D:\netCore_demo\shippingPro\DAL\bin\Debug\net8.0\Domain.pdb
+D:\netCore_demo\shippingPro\DAL\obj\Debug\net8.0\DAL.csproj.AssemblyReference.cache
+D:\netCore_demo\shippingPro\DAL\obj\Debug\net8.0\DAL.GeneratedMSBuildEditorConfig.editorconfig
+D:\netCore_demo\shippingPro\DAL\obj\Debug\net8.0\DAL.AssemblyInfoInputs.cache
+D:\netCore_demo\shippingPro\DAL\obj\Debug\net8.0\DAL.AssemblyInfo.cs
+D:\netCore_demo\shippingPro\DAL\obj\Debug\net8.0\DAL.csproj.CoreCompileInputs.cache
+D:\netCore_demo\shippingPro\DAL\obj\Debug\net8.0\DAL.csproj.Up2Date
+D:\netCore_demo\shippingPro\DAL\obj\Debug\net8.0\DAL.dll
+D:\netCore_demo\shippingPro\DAL\obj\Debug\net8.0\refint\DAL.dll
+D:\netCore_demo\shippingPro\DAL\obj\Debug\net8.0\DAL.pdb
+D:\netCore_demo\shippingPro\DAL\obj\Debug\net8.0\DAL.genruntimeconfig.cache
+D:\netCore_demo\shippingPro\DAL\obj\Debug\net8.0\ref\DAL.dll

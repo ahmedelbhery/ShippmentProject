@@ -1,0 +1,130 @@
+﻿#region Usings
+using BL.Contract;
+using BL.Contract.Shipment;
+using BL.Contracts;
+using BL.Contracts.Shipment;
+using BL.Mapping;
+using BL.Services;
+using BL.Services.Shipment;
+using DAL;
+using DAL.Contracts;
+using DAL.DBContext;
+using DAL.Repositiories;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using Serilog;
+using System.Text;
+using WebApi.Services;
+#endregion
+
+namespace WebAPI
+{
+    public class RegisterServicesHelper
+    {
+        public static void RegisterServices(WebApplicationBuilder builder)
+        {
+            #region configure authentication
+            builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+             .AddCookie(options =>
+             {
+                 options.LoginPath = "/login";
+                 options.AccessDeniedPath = "/access-denied";
+             });
+            #endregion
+
+            #region dbConnection
+            builder.Services.AddDbContext<ShipingContext>(options =>
+            options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+            #endregion
+
+            #region configure Identity
+            builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
+            {
+                options.Password.RequiredLength = 6;
+                options.Password.RequireLowercase = false;
+                options.Password.RequireUppercase = false;
+                options.Password.RequireNonAlphanumeric = false;
+                options.User.RequireUniqueEmail = true;
+            }).AddEntityFrameworkStores<ShipingContext>()
+              .AddDefaultTokenProviders();
+            #endregion
+
+            #region JWT
+            var jwtSecretKey = builder.Configuration.GetValue<string>("JwtSettings:SecretKey");
+            var key = Encoding.ASCII.GetBytes(jwtSecretKey);
+
+            builder.Services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer(options =>
+            {
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = false,
+                    ValidateAudience = false,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(key)
+                };
+            });
+            #endregion
+
+            builder.Services.AddAuthorization();
+
+            #region dbConnection
+            builder.Services.AddDbContext<ShipingContext>(options =>
+            options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+            #endregion
+
+            #region logger configuration
+            // Configure Serilog for logging
+            Log.Logger = new LoggerConfiguration()
+                .WriteTo.Console()
+                .WriteTo.MSSqlServer(
+                    connectionString: builder.Configuration.GetConnectionString("DefaultConnection"),
+                    tableName: "Log",
+                    autoCreateSqlTable: true)
+                .CreateLogger();
+            builder.Host.UseSerilog();
+            #endregion
+
+            #region Services
+
+            builder.Services.AddScoped(typeof(IGenricRepository<>), typeof(GenericRepository<>));
+            builder.Services.AddScoped(typeof(IViewRepository<>), typeof(ViewRepository<>));
+            builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+            builder.Services.AddScoped<IShippingType, ShippingTypeService>();
+            builder.Services.AddScoped<ICarrier, CarrierService>();
+            builder.Services.AddScoped<ICountry, CountryService>();
+            builder.Services.AddScoped<ICity, CityService>();
+            builder.Services.AddScoped<IUserService, UserService>();
+            builder.Services.AddScoped<IPaymentMethods, PaymentMethodsService>();
+            builder.Services.AddScoped<IPackgingTypes, ShipingPackgingService>();
+            builder.Services.AddScoped<IUserSender, UserSenderService>();
+            builder.Services.AddScoped<IUserReceiver, UserReceiverService>();
+
+            builder.Services.AddScoped<IShipmentCommand, ShipmentCommandService>();
+            builder.Services.AddScoped<IShipmentQuery, ShipmentQueryService>();
+            builder.Services.AddScoped<ITrackingNumberCreator, TrackingNumberCreatorService>();
+            builder.Services.AddScoped<IRateCalculator, RateCalculatorService>();
+            builder.Services.AddScoped<IShipmentStatus, ShipmentStatusService>();
+            builder.Services.AddScoped<IShipmentStateHandlerFactory, ShipmentStateHandlerFactory>();
+            builder.Services.AddScoped<ApproveShipment>();
+            builder.Services.AddScoped<ReadyShipment>();
+            builder.Services.AddScoped<ShippedShipment>();
+            builder.Services.AddScoped<DelivredShipment>();
+            builder.Services.AddScoped<ReturnedShipment>();
+
+            builder.Services.AddScoped<TokenService>();
+            builder.Services.AddScoped<IRefreshTokens, RefreshTokenServic>();
+            builder.Services.AddScoped<IRefreshTokenRetrival, RefreshTokenRetrievalService>();
+            #endregion
+
+            builder.Services.AddAutoMapper(typeof(MappingProfile).Assembly);
+        }
+    }
+}
