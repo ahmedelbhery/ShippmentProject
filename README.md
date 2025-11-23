@@ -55,17 +55,7 @@ It includes:
 Created → Approved → ReadyForShipped → Shipped → Delivered → Returned → Deleted
 
 
----
 
-## 🧰 Project Structure
-
-ShippingPro/
-│
-├── Domain/ # Entities and core business models
-├── DAL/ # Data Access Layer (EF Core, Repositories)
-├── BL/ # Business Logic (Services, DTOs, Mappers)
-├── Main/ # API and Web UI Layer
-├── Resources/ # Localization files
 
 "ConnectionStrings": {
   "DefaultConnection": "Server=.;Database=Shipping;Trusted_Connection=True;MultipleActiveResultSets=true"
